@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "net.sistr.flexibleguns.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [],
+    "client": [ "MixinModelLoader" ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

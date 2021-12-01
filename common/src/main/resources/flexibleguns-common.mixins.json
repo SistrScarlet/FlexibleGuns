@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "net.sistr.flexibleguns.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "mixins": [ "MixinEntity", "MixinItemStack", "MixinLivingEntity", "MixinPlayerEntity", "MixinServerWorld", "ModelPredicateProviderRegistrySpecificAccessor" ],
+    "client": [ "MixinClientPlayNetworkHandler", "MixinGameRenderer", "MixinInGameHud", "MixinItemModels", "MixinMinecraftClient" ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

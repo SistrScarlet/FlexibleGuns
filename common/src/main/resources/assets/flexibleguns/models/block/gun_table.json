@@ -1,0 +1,12 @@
+{
+    "parent": "minecraft:block/cube",
+    "textures": {
+        "particle": "flexibleguns:block/gun_table_front",
+        "north": "flexibleguns:block/gun_table_front",
+        "south": "flexibleguns:block/gun_table_side",
+        "east": "flexibleguns:block/gun_table_side",
+        "west": "flexibleguns:block/gun_table_front",
+        "up": "flexibleguns:block/gun_table_top",
+        "down": "flexibleguns:block/gun_table_bottom"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "flexibleguns:block/gun_table"
+        }
+    }
+}

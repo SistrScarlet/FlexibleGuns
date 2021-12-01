@@ -1,0 +1,3 @@
+package net.sistr.flexibleguns.entity.util
+
+interface ShouldAccurateVelocitySync

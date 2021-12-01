@@ -1,0 +1,21 @@
+{
+    "itemGroup.flexibleguns.flexibleguns": "Flexible Guns",
+
+    "item.flexibleguns.gun": "Gun",
+
+    "item.flexibleguns.bot_spawn_egg": "Bot (WIP)",
+
+    "block.flexibleguns.gun_table": "Gun Table",
+
+    "container.flexibleguns.gun_table": "Gun Table",
+
+    "gun_table.damage": "Damage",
+    "gun_table.headshot": "HS",
+    "gun_table.rateOfFire": "Rate of Fire",
+
+    "entity.flexibleguns.bot": "Bot (WIP)",
+    "entity.flexibleguns.bullet": "Bullet",
+
+    "death.attack.bullet": "%1$s は %2$s に撃ち抜かれた",
+    "death.attack.bullet.item": "%1$s は %2$s の %3$s で撃ち抜かれた"
+}

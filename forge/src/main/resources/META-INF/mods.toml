@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[35,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "flexibleguns"
+version = "${version}"
+displayName = "Flexible Guns"
+authors = "Sistr"
+description = "データパックで銃が追加できる、良い感じのModです。"
+#logoFile = ""
+
+[[dependencies.flexibleguns]]
+modId = "forge"
+mandatory = true
+versionRange = "[35,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.flexibleguns]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.flexibleguns]]
+modId = "architectury"
+mandatory = true
+versionRange = "[1.1.55,)"
+ordering = "AFTER"
+side = "BOTH"
