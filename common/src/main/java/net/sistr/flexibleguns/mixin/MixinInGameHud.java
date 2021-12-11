@@ -6,9 +6,11 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
-import net.sistr.flexibleguns.client.overlay.AmmoOverlay;
-import net.sistr.flexibleguns.item.ClientGunInstance;
-import net.sistr.flexibleguns.util.ItemInstanceHolder;
+import net.minecraft.item.ItemStack;
+import net.sistr.flexibleguns.client.overlay.HudOverlayRenderer;
+import net.sistr.flexibleguns.util.CustomItemStack;
+import net.sistr.flexibleguns.util.ItemInstance;
+import net.sistr.flexibleguns.util.ShootableItem;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,22 +28,23 @@ public class MixinInGameHud {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void onRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        AmmoOverlay.Companion.getINSTANCE().render(this.client, matrices, tickDelta);
+        HudOverlayRenderer.Companion.getINSTANCE().render(this.client, matrices, tickDelta);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
-        AmmoOverlay.Companion.getINSTANCE().tick(this.client);
+        HudOverlayRenderer.Companion.getINSTANCE().tick(this.client);
     }
 
     @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
     private void onRenderCrosshair(MatrixStack matrices, CallbackInfo ci) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         if (player != null) {
-            ((ItemInstanceHolder) player).getItemInstanceFG(player.getMainHandStack())
-                    .filter(instance -> instance instanceof ClientGunInstance)
-                    .map(instance -> (ClientGunInstance) instance)
-                    .ifPresent(gun -> ci.cancel());
+            ItemStack stack = player.getMainHandStack();
+            ItemInstance instance = ((CustomItemStack) (Object) stack).getItemInstanceFG();
+            if (instance instanceof ShootableItem) {
+                ci.cancel();
+            }
         }
     }
 

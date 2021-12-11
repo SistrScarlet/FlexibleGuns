@@ -8,8 +8,8 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import net.sistr.flexibleguns.FlexibleGunsMod
-import net.sistr.flexibleguns.item.ClientGunInstance
-import net.sistr.flexibleguns.util.ItemInstanceHolder
+import net.sistr.flexibleguns.util.CustomItemStack
+import net.sistr.flexibleguns.util.HasAmmoItem
 
 object AmmoPacket {
     val ID = Identifier(FlexibleGunsMod.MODID, "ammo")
@@ -31,10 +31,10 @@ object AmmoPacket {
         ctx.queue {
             val player = ctx.player
             val mainStack = player.mainHandStack
-            (player as ItemInstanceHolder).getItemInstanceFG(mainStack)
-                .filter { it is ClientGunInstance }
-                .map { it as ClientGunInstance }
-                .ifPresent { it.ammo = ammo }
+            val itemInstance = ((mainStack as Any) as CustomItemStack).getItemInstanceFG()
+            if (itemInstance != null && itemInstance is HasAmmoItem) {
+                itemInstance.setAmmoAmount(ammo)
+            }
         }
     }
 

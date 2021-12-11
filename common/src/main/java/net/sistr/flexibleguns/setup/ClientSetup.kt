@@ -9,9 +9,9 @@ import net.sistr.flexibleguns.client.SoundCapManager
 import net.sistr.flexibleguns.client.renderer.BotRenderer
 import net.sistr.flexibleguns.client.renderer.BulletRenderer
 import net.sistr.flexibleguns.client.screen.GunTableScreen
-import net.sistr.flexibleguns.item.ClientGunInstance
+import net.sistr.flexibleguns.item.GunInstance
 import net.sistr.flexibleguns.mixin.ModelPredicateProviderRegistrySpecificAccessor
-import net.sistr.flexibleguns.util.ItemInstanceHolder
+import net.sistr.flexibleguns.util.CustomItemStack
 
 object ClientSetup {
     val GUN_SHOOT_SOUND_CAP_ID = Identifier(FlexibleGunsMod.MODID, "gun_shoot")
@@ -31,10 +31,8 @@ object ClientSetup {
             Identifier(FlexibleGunsMod.MODID, "ammo")
         ) { stack, _, entity ->
             return@callRegister if (entity != null) {
-                (entity as ItemInstanceHolder).getItemInstanceFG(stack).map {
-                    val gunInstance = it as ClientGunInstance
-                    gunInstance.ammo.toFloat()
-                }.orElse(0f)
+                val itemIns = ((stack as Any) as CustomItemStack).getItemInstanceFG()
+                (itemIns as GunInstance).getAmmoAmount().toFloat()
             } else {
                 0f
             }

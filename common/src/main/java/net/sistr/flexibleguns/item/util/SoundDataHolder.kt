@@ -15,6 +15,7 @@ class SoundDataHolder private constructor(private val length: Int, soundMap: Map
     }
 
     companion object {
+        val EMPTY = getBuilder().build()
         fun getBuilder(): Builder {
             return Builder()
         }

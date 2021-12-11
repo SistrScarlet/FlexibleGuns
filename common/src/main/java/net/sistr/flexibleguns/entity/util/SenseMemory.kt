@@ -5,11 +5,10 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import java.util.concurrent.ConcurrentHashMap
 
-//senseが起きると非同期で視界を取り記憶に収める
-//記憶には対象とその位置が記録される
-//記憶は100tickしか記憶できない
+
 //クライアント側で駆動するとクラッシュする(はず)
 class SenseMemory(private val owner: LivingEntity, private val senses: ISense) {
+    //対象とその位置が記録される。100tickしか記憶できない
     private val memoriesMap = ConcurrentHashMap<Int, ImmutableList<Memory>>()
     private var sensed = false
 
@@ -20,6 +19,7 @@ class SenseMemory(private val owner: LivingEntity, private val senses: ISense) {
             .forEach { memoriesMap.remove(it) }
     }
 
+    //視界を取り記憶に収める
     fun sense() {
         if (sensed) {
             return

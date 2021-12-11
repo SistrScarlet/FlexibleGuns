@@ -10,7 +10,6 @@ import net.minecraft.entity.mob.HostileEntity
 import net.minecraft.entity.mob.Monster
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.Packet
 import net.minecraft.util.Hand
 import net.minecraft.world.LocalDifficulty
 import net.minecraft.world.ServerWorldAccess
@@ -18,6 +17,7 @@ import net.minecraft.world.World
 import net.sistr.flexibleguns.entity.goal.ShootTargetGoal
 import net.sistr.flexibleguns.entity.util.HasSenseMemory
 import net.sistr.flexibleguns.entity.util.SenseMemory
+import net.sistr.flexibleguns.resource.GunManager
 import net.sistr.flexibleguns.setup.Registration
 
 //todo 視界と記憶
@@ -58,7 +58,11 @@ class FGBotEntity(entityType: EntityType<out FGBotEntity>, world: World?) :
     }
 
     override fun initEquipment(difficulty: LocalDifficulty?) {
-        this.setStackInHand(Hand.MAIN_HAND, Registration.GUN_ITEM.get().defaultStack)
+        GunManager.INSTANCE.getRandomGunId()
+            .ifPresent {
+                val gun = Registration.GUN_ITEM.get().createGun(it)
+                this.setStackInHand(Hand.MAIN_HAND, gun)
+            }
     }
 
     override fun initGoals() {

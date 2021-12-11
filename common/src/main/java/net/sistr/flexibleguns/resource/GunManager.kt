@@ -26,11 +26,11 @@ class GunManager {
         return gunSettings[id]
     }
 
-    fun getRandomGunSetting(): Optional<GunSetting> {
+    fun getRandomGunId(): Optional<Identifier> {
         val rand = ThreadLocalRandom.current()
         var min = Int.MAX_VALUE
-        var result: GunSetting? = null
-        for (setting in gunSettings.values) {
+        var result: Identifier? = null
+        for (setting in getGunSettings().keys) {
             val num = rand.nextInt()
             if (num < min) {
                 result = setting

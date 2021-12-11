@@ -5,33 +5,28 @@ import net.fabricmc.api.Environment
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.client.render.model.ModelLoader
 import net.minecraft.client.util.ModelIdentifier
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
-import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
-import net.minecraft.util.collection.DefaultedList
 import net.minecraft.world.World
 import net.sistr.flexibleguns.item.util.CustomTextureItem
 import net.sistr.flexibleguns.resource.GunManager
 import net.sistr.flexibleguns.resource.GunSetting
+import net.sistr.flexibleguns.util.CustomItem
+import net.sistr.flexibleguns.util.CustomItemStack
 import net.sistr.flexibleguns.util.ItemInstance
-import net.sistr.flexibleguns.util.ItemInstanceAttachable
 
-//todo Lore
 //todo リロード音
 //todo 減衰
 //todo 空気抵抗
 //todo 弾の見た目
-//todo 弾数の同期ズレ
 //todo しゃがみ時の精度上昇効果
 //todo 止まっている時の精度上昇効果
 //todo 構えとリロード排他設定
-class GunItem(settings: Settings) : Item(settings), ItemInstanceAttachable, CustomTextureItem {
+class GunItem(settings: Settings) : Item(settings), CustomItem, CustomTextureItem {
 
     @Environment(EnvType.CLIENT)
     override fun appendTooltip(
@@ -40,23 +35,30 @@ class GunItem(settings: Settings) : Item(settings), ItemInstanceAttachable, Cust
         tooltip: MutableList<Text>,
         context: TooltipContext
     ) {
-        //保持者が取れぬ
-        val stackNbt = stack.orCreateTag
-        //銃の設定を取得
-        val settingId = Identifier(stackNbt.getString("GunSettingId"))
-        val setting = GunManager.INSTANCE.getGunSetting(settingId)
-        if (setting?.reload != null) {
-            tooltip.add(
-                TranslatableText("gun." + setting.gunId.namespace + "." +
-                        setting.gunId.path.replace("/", ".") + ".lore")
-            )
-            tooltip.add(
-                LiteralText(
-                    stackNbt.getCompound("GunDate").getInt("ammo").toString()
-                            + " / " + setting.reload.maxAmmo.toString()
+        val itemIns = ((stack as Any) as CustomItemStack).getItemInstanceFG()
+        if (itemIns is GunInstance) {
+            val stackNbt = stack.orCreateTag
+            //銃の設定を取得
+            val settingId = Identifier(stackNbt.getString("GunSettingId"))
+            val setting = GunManager.INSTANCE.getGunSetting(settingId)
+            if (setting != null) {
+                //lore
+                tooltip.add(
+                    TranslatableText(
+                        "gun." + setting.gunId.namespace + "." +
+                                setting.gunId.path.replace("/", ".") + ".lore"
+                    )
                 )
-            )
+            }
+            if (itemIns.reload != null) {
+                tooltip.add(
+                    LiteralText(
+                        itemIns.reload.ammo.toString() + " / " + itemIns.reload.maxAmmo.toString()
+                    )
+                )
+            }
         }
+
     }
 
     override fun shouldSyncTagToClient(): Boolean {
@@ -84,24 +86,17 @@ class GunItem(settings: Settings) : Item(settings), ItemInstanceAttachable, Cust
         return Identifier(stack.orCreateTag.getString("GunSettingId"))
     }
 
-    override fun createItemInstanceFG(world: World, holder: LivingEntity, stack: ItemStack): ItemInstance {
+    override fun createItemInstanceFG(stack: ItemStack): ItemInstance {
         //設定が無い場合
         val stackNbt = stack.orCreateTag
-        if (!stackNbt.contains("GunSettingId") && (holder !is PlayerEntity || holder.isCreative)) {
-            GunManager.INSTANCE.getRandomGunSetting()
-                .ifPresent {
-                    stackNbt.putString("GunSettingId", it.gunId.toString())
-                }
+        if (!stackNbt.contains("GunSettingId")) {
+            return ItemInstance.EMPTY
         }
         init(stack)
         //銃の設定が無いなら空を返す
-        if (getGunSetting(stack) == null) {
-            return ItemInstance.EMPTY
-        }
-        if (world.isClient) {
-            return ClientGunInstance(holder, stack)
-        }
-        return GunInstance(holder, stack)
+        val setting = getGunSetting(stack) ?: return ItemInstance.EMPTY
+        val gunDate = stackNbt.getCompound("GunDate")
+        return GunInstance(setting, gunDate)
     }
 
     fun getGunSetting(stack: ItemStack): GunSetting? {
@@ -123,8 +118,13 @@ class GunItem(settings: Settings) : Item(settings), ItemInstanceAttachable, Cust
             stackNbt.remove("CustomTextureID")
             //stackNbt.remove("GunSettingId")
             //stackNbt.remove("GunDate")
-            stack.setCustomName(null)
+            //stack.setCustomName(null)
             return
+        }
+
+        //テクスチャの設定
+        setting.textureId?.let { id ->
+            stackNbt.putString("CustomTextureID", "$id#inventory")
         }
 
         //名前の設定
@@ -133,11 +133,6 @@ class GunItem(settings: Settings) : Item(settings), ItemInstanceAttachable, Cust
         )
         name.style = name.style.withItalic(false)
         stack.setCustomName(name)
-
-        //テクスチャの設定
-        setting.textureId?.let { id ->
-            stackNbt.putString("CustomTextureID", "$id#inventory")
-        }
     }
 
 }

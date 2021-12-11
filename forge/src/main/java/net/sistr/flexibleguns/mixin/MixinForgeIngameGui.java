@@ -4,7 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.sistr.flexibleguns.client.overlay.AmmoOverlay;
+import net.sistr.flexibleguns.client.overlay.HudOverlayRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,7 +19,7 @@ public abstract class MixinForgeIngameGui extends InGameHud {
 
     @Inject(method = "render", at = @At("HEAD"))
     public void onRender(MatrixStack matrices, float tickDelta, CallbackInfo ci) {
-        AmmoOverlay.Companion.getINSTANCE().render(this.client, matrices, tickDelta);
+        HudOverlayRenderer.Companion.getINSTANCE().render(this.client, matrices, tickDelta);
     }
 
 }

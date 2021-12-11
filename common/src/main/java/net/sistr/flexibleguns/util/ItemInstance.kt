@@ -1,16 +1,30 @@
 package net.sistr.flexibleguns.util
 
+import net.minecraft.entity.LivingEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.util.Hand
+
 interface ItemInstance {
     companion object {
         val EMPTY = object : ItemInstance {
-            override fun tick() {}
-            override fun remove() {}
+            override fun startTick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?) {}
+            override fun tick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?) {}
+            override fun endTick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?) {}
+            override fun save(stack: ItemStack) {}
+            override fun copy(stack: ItemStack): ItemInstance {
+                return this
+            }
         }
     }
 
-    fun tick()
+    fun startTick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?)
 
-    //ItemStackが破棄されている場合があるため、NBTへの保存はここでするべきでない
-    fun remove()
+    fun tick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?)
+
+    fun endTick(stack: ItemStack, holder: LivingEntity, heldHand: Hand?)
+
+    fun save(stack: ItemStack)
+
+    fun copy(stack: ItemStack): ItemInstance
 
 }
