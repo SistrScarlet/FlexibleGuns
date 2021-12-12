@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.setup
 
-import me.shedaniel.architectury.registry.DeferredRegister
-import me.shedaniel.architectury.registry.MenuRegistry
+import dev.architectury.registry.menu.MenuRegistry
+import dev.architectury.registry.registries.DeferredRegister
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.SpawnGroup
 import net.minecraft.entity.player.PlayerInventory

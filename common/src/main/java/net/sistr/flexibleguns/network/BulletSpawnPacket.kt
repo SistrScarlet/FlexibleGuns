@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.network
 
+import dev.architectury.networking.NetworkManager
 import io.netty.buffer.Unpooled
-import me.shedaniel.architectury.networking.NetworkManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.MinecraftClient
@@ -22,7 +22,7 @@ object BulletSpawnPacket {
 
     fun createPacket(bullet: FGBulletEntity): Packet<*> {
         val buf = PacketByteBuf(Unpooled.buffer())
-        buf.writeVarInt(bullet.entityId)
+        buf.writeVarInt(bullet.id)
         buf.writeUuid(bullet.uuid)
         buf.writeVarInt(Registry.ENTITY_TYPE.getRawId(bullet.type))
         buf.writeDouble(bullet.x)
@@ -35,7 +35,7 @@ object BulletSpawnPacket {
         buf.writeDouble(velocity.x)
         buf.writeDouble(velocity.y)
         buf.writeDouble(velocity.z)
-        buf.writeInt(bullet.owner?.entityId ?: 0)
+        buf.writeInt(bullet.owner?.id ?: 0)
         bullet.write(buf)
         return NetworkManager.toPacket(NetworkManager.Side.S2C, ID, buf)
     }
@@ -80,7 +80,7 @@ object BulletSpawnPacket {
         if (bullet is FGBulletEntity) {
             bullet.updateTrackedPosition(x, y, z)
             bullet.headYaw = headYaw
-            bullet.entityId = id
+            bullet.id = id
             bullet.uuid = uuid
             bullet.updatePositionAndAngles(x, y, z, yaw, pitch)
             bullet.setVelocity(velocityX, velocityY, velocityZ)

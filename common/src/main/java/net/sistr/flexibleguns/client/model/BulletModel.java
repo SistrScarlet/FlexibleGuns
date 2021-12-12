@@ -4,37 +4,49 @@
 
 package net.sistr.flexibleguns.client.model;
 
-import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Identifier;
+import net.sistr.flexibleguns.FlexibleGunsMod;
 
 public class BulletModel extends EntityModel<Entity> {
+    public static final EntityModelLayer MODEL_LAYER = new EntityModelLayer(new Identifier(FlexibleGunsMod.MODID, "bulletmodel"), "main");
     private final ModelPart bb_main;
 
-    public BulletModel() {
-        textureWidth = 8;
-        textureHeight = 4;
-        bb_main = new ModelPart(this);
-        bb_main.setPivot(0.0F, 0.0F, 0.0F);
-        bb_main.setTextureOffset(0, 0).addCuboid(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, 0.0F, false);
+    public BulletModel(ModelPart root) {
+        this.bb_main = root.getChild("bb_main");
+    }
+
+    public static TexturedModelData createBodyLayer() {
+        ModelData modelData = new ModelData();
+        ModelPartData modelPartData = modelData.getRoot();
+
+        ModelPartData bb_main = modelPartData.addChild("bb_main",
+                ModelPartBuilder.create()
+                        .uv(0, 0)
+                        .cuboid(-1.0F, -2.0F, -1.0F,
+                                2.0F, 2.0F, 2.0F,
+                                new Dilation(0.0F)
+                        ),
+                ModelTransform.pivot(0.0F, 0.0F, 0.0F)
+        );
+
+        return TexturedModelData.of(modelData, 8, 4);
     }
 
     @Override
     public void setAngles(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        //previously the render function, render code was moved to a method below
+
     }
 
     @Override
     public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         bb_main.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
-
-    public void setRotationAngle(ModelPart bone, float x, float y, float z) {
-        bone.pitch = x;
-        bone.yaw = y;
-        bone.roll = z;
     }
 
 }

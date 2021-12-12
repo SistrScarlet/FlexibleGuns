@@ -61,7 +61,8 @@ class GunRecipeManager {
                                 }
                             }
                             "tag" -> {
-                                val tag = ServerTagManagerHolder.getTagManager().items.getTag(id)
+                                val tag = ServerTagManagerHolder.getTagManager()
+                                    .getTag(Registry.ITEM_KEY, id) { IllegalStateException("Unknown item tag") }
                                 if (tag != null) {
                                     builder.addPredicate(count, tag)
                                 }

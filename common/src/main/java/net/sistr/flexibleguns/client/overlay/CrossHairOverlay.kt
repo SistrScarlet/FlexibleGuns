@@ -17,7 +17,7 @@ class CrossHairOverlay : HudOverlayRenderer.Overlay {
             return
         }
 
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
 
         //10m先、1.8高さ、角度は10.20度、pは28(実測だとそうだが、計算式は正しくない)
         //GUIサイズでscaledは動く

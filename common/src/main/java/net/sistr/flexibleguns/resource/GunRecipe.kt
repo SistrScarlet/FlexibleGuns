@@ -141,7 +141,11 @@ class GunRecipe(
 
         override fun write(buf: PacketByteBuf) {
             buf.writeByte(1)
-            buf.writeIdentifier(ServerTagManagerHolder.getTagManager().items.getTagId(tag))
+            buf.writeIdentifier(
+                ServerTagManagerHolder.getTagManager().getTagId(
+                    Registry.ITEM_KEY, tag
+                ) { IllegalStateException("Unknown item tag") }
+            )
         }
     }
 
@@ -181,7 +185,10 @@ class GunRecipe(
                         val id = buf.readIdentifier()
                         addPredicate(
                             count,
-                            TagMatchPredicate(ServerTagManagerHolder.getTagManager().items.getTag(id)!!)
+                            TagMatchPredicate(ServerTagManagerHolder.getTagManager().getTag(
+                                Registry.ITEM_KEY, id
+                            ) { IllegalStateException("Unknown item tag") }
+                            )
                         )
                     }
                     2 -> {

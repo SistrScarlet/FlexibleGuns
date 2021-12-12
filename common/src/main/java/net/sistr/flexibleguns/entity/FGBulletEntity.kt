@@ -20,13 +20,12 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3f
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.World
-import net.sistr.flexibleguns.client.SoundCapManager
 import net.sistr.flexibleguns.entity.util.ShouldAccurateVelocitySync
 import net.sistr.flexibleguns.network.BulletHitPacket
 import net.sistr.flexibleguns.network.BulletSpawnPacket
-import net.sistr.flexibleguns.setup.ClientSetup
 import net.sistr.flexibleguns.setup.Registration
 import net.sistr.flexibleguns.util.CollisionDetection
 import net.sistr.flexibleguns.util.PrevEntityGetter
@@ -66,7 +65,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
 
     }
 
-    override fun setProperties(
+    override fun setVelocity(
         user: Entity,
         pitch: Float,
         yaw: Float,
@@ -99,7 +98,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
 
     override fun tick() {
         if (decay < this.age) {
-            this.remove()
+            this.discard()
             return
         }
 
@@ -114,7 +113,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
                 val pos = pos
                 for (box in voxelShape.boundingBoxes) {
                     if (box.offset(blockPos).contains(pos)) {
-                        this.remove()
+                        this.discard()
                         return
                     }
                 }
@@ -138,10 +137,10 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
         val nX = this.x + dX
         val nY = this.y + dY
         val nZ = this.z + dZ
-        val h = MathHelper.sqrt(squaredHorizontalLength(velocity))
+        val h = velocity.horizontalLength()
         val rad = (180.0 / Math.PI)
         yaw = (MathHelper.atan2(dX, dZ) * rad).toFloat()
-        pitch = (MathHelper.atan2(dY, h.toDouble()) * rad).toFloat()
+        pitch = (MathHelper.atan2(dY, h) * rad).toFloat()
         pitch = updateRotation(prevPitch, pitch)
         yaw = updateRotation(prevYaw, yaw)
         var drag = this.getDragInAir()
@@ -170,7 +169,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
         while (0 < length - loop * interval) {
             val point = start.add(toVecN.multiply((loop * interval).toDouble()))
             world.addParticle(
-                DustParticleEffect(0.9f, 0.9f, 0.9f, 0.5f), point.getX(), point.getY(), point.getZ(),
+                DustParticleEffect(Vec3f(0.9f, 0.9f, 0.9f), 0.5f), point.getX(), point.getY(), point.getZ(),
                 0.0, 0.0, 0.0
             )
             loop++
@@ -211,7 +210,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
             this.boundingBox.stretch(velocity).expand(1.0),
             4
         ) { entity: Entity? ->
-            method_26958(
+            canHit(
                 entity
             )
         }
@@ -241,7 +240,7 @@ open class FGBulletEntity(type: EntityType<FGBulletEntity>, world: World) :
             )
         }
         target.velocity = targetVelocity
-        this.remove()
+        this.discard()
     }
 
     fun isHeadshot(target: Entity): Boolean {

@@ -27,8 +27,8 @@ object FGunPartsRegistry {
     }
 
     fun loadGunParts(gunStack: ItemStack): Collection<IFGunParts> {
-        if (gunStack.tag == null) return emptyList()
-        return loadGunParts(gunStack.tag!!)
+        if (gunStack.nbt == null) return emptyList()
+        return loadGunParts(gunStack.nbt!!)
     }
 
     fun loadGunParts(nbt: NbtCompound): Collection<IFGunParts> {

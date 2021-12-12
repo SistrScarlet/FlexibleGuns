@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.network
 
+import dev.architectury.networking.NetworkManager
 import io.netty.buffer.Unpooled
-import me.shedaniel.architectury.networking.NetworkManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.network.PacketByteBuf

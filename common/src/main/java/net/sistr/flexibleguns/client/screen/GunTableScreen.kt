@@ -3,7 +3,9 @@ package net.sistr.flexibleguns.client.screen
 import com.google.common.collect.ImmutableList
 import com.google.common.collect.ImmutableMap
 import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.gui.screen.ingame.BeaconScreen
 import net.minecraft.client.gui.screen.ingame.HandledScreen
+import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.item.ItemStack
@@ -13,7 +15,6 @@ import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
-import net.minecraft.util.collection.DefaultedList
 import net.minecraft.util.math.MathHelper
 import net.sistr.flexibleguns.FlexibleGunsMod
 import net.sistr.flexibleguns.block.GunTableScreenHandler
@@ -25,7 +26,7 @@ import net.sistr.flexibleguns.resource.GunSetting
 import net.sistr.flexibleguns.setup.Registration
 import kotlin.math.roundToInt
 
-open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: PlayerInventory, title: Text) :
+open class GunTableScreen<T : GunTableScreenHandler>(handler: T, val inventory: PlayerInventory, title: Text) :
     HandledScreen<T>(
         handler,
         inventory, title
@@ -104,7 +105,7 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
             recipe.forEach {
                 builder.put(
                     it.getRecipeId(),
-                    it.match(this.playerInventory) || this.playerInventory.player.isCreative
+                    it.match(this.inventory) || this.inventory.player.isCreative
                 )
             }
             craftableRecipeMap = builder.build()
@@ -144,7 +145,7 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
 
     private fun renderForeground(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         val showGuns = ItemStack(Registration.GUN_ITEM.get())
-        val nbt = showGuns.orCreateTag
+        val nbt = showGuns.orCreateNbt
         var num = 0
         val xBase = (width - backgroundWidth) / 2
         val yBase = (height - backgroundHeight) / 2
@@ -152,7 +153,9 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
             .forEach {
                 nbt.putString("CustomTextureID", it.setting.textureId.toString() + "#inventory")
                 this.client!!.itemRenderer.renderInGui(showGuns, xBase + 5 + (num % 5) * 16, yBase + 5 + (num / 5) * 16)
-                client!!.textureManager.bindTexture(TEXTURE)
+                RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+                RenderSystem.setShaderTexture(0, TEXTURE)
                 if (it === gun) {
                     zOffset = 300
                     this.drawTexture(
@@ -233,8 +236,9 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
             recipe.forEach { gunRecipe ->
                 var materialNum = 0
                 gunRecipe.getMaterialExample().forEach { materials ->
-                    RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-                    client!!.textureManager.bindTexture(TEXTURE)
+                    RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+                    RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+                    RenderSystem.setShaderTexture(0, TEXTURE)
                     this.drawTexture(
                         matrices,
                         xBase + 87 + materialNum * 18, yBase + 73 + recipeNum * 18,
@@ -262,8 +266,9 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
             if (xBase + 87 <= mouseX && mouseX < xBase + 87 + 9 * 18
                 && yBase + 73 <= mouseY && mouseY < yBase + 73 + 18 * 3
             ) {
-                RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-                client!!.textureManager.bindTexture(TEXTURE)
+                RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+                RenderSystem.setShaderTexture(0, TEXTURE)
                 val index: Int = MathHelper.floor((mouseY - (yBase + 73)) / 18F)
 
                 //前のフレームで表示してなかったら
@@ -274,7 +279,7 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
                     recipe.forEach {
                         builder.put(
                             it.getRecipeId(),
-                            it.match(this.playerInventory) || this.playerInventory.player.isCreative
+                            it.match(this.inventory) || this.inventory.player.isCreative
                         )
                     }
                     craftableRecipeMap = builder.build()
@@ -300,16 +305,17 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
     }
 
     override fun drawBackground(matrices: MatrixStack, delta: Float, mouseX: Int, mouseY: Int) {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
-        client!!.textureManager.bindTexture(TEXTURE)
+        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShaderTexture(0, TEXTURE)
         val i = (width - backgroundWidth) / 2
         val j = (height - backgroundHeight) / 2
         this.drawTexture(matrices, i, j, 0, 0, backgroundWidth, backgroundHeight)
     }
 
-    override fun onHandlerRegistered(handler: ScreenHandler, stacks: DefaultedList<ItemStack>) {
+    /*override fun onHandlerRegistered(handler: ScreenHandler, stacks: DefaultedList<ItemStack>) {
         onSlotUpdate(handler, 0, handler.getSlot(0).stack)
-    }
+    }*/
 
     override fun onSlotUpdate(handler: ScreenHandler, slotId: Int, stack: ItemStack?) {
 
@@ -319,8 +325,8 @@ open class GunTableScreen<T : GunTableScreenHandler>(handler: T, inventory: Play
 
     }
 
-    override fun tick() {
-        super.tick()
+    override fun handledScreenTick() {
+        super.handledScreenTick()
         this.recipeRollCounter++
     }
 

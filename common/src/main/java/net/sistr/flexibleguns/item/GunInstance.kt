@@ -134,7 +134,7 @@ class GunInstance(
     //メイン処理
 
     override fun save(stack: ItemStack) {
-        val stackNbt = stack.orCreateTag
+        val stackNbt = stack.orCreateNbt
         val gunDate = stackNbt.getCompound("GunDate")
         gunDate.putFloat("delay", delay)
         gunDate.putBoolean("prevHold", prevHold)
@@ -343,7 +343,7 @@ class GunInstance(
                 if (zoom != null && (holder as ZoomableEntity).isZoom_FG()) zoom.zoomInAccuracy else this.inAccuracy
             val halfPi = (Math.PI / 2).toFloat()
             //ちょっと中心に寄せる
-            bullet.setProperties(
+            bullet.setVelocity(
                 holder,
                 holder.pitch + inAccuracy * ((1 - MathHelper.sin(holder.random.nextFloat() * halfPi)) * 2 - 1),
                 holder.yaw + inAccuracy * ((1 - MathHelper.sin(holder.random.nextFloat() * halfPi)) * 2 - 1),

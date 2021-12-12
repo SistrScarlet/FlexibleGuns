@@ -37,7 +37,7 @@ class GunItem(settings: Settings) : Item(settings), CustomItem, CustomTextureIte
     ) {
         val itemIns = ((stack as Any) as CustomItemStack).getItemInstanceFG()
         if (itemIns is GunInstance) {
-            val stackNbt = stack.orCreateTag
+            val stackNbt = stack.orCreateNbt
             //銃の設定を取得
             val settingId = Identifier(stackNbt.getString("GunSettingId"))
             val setting = GunManager.INSTANCE.getGunSetting(settingId)
@@ -61,12 +61,8 @@ class GunItem(settings: Settings) : Item(settings), CustomItem, CustomTextureIte
 
     }
 
-    override fun shouldSyncTagToClient(): Boolean {
-        return true
-    }
-
     override fun getTextureId(stack: ItemStack): ModelIdentifier {
-        val nbt = stack.orCreateTag
+        val nbt = stack.orCreateNbt
         return if (nbt.contains("CustomTextureID")) {
             ModelIdentifier(nbt.getString("CustomTextureID"))
         } else {
@@ -76,19 +72,19 @@ class GunItem(settings: Settings) : Item(settings), CustomItem, CustomTextureIte
 
     fun createGun(id: Identifier): ItemStack {
         val stack = ItemStack(this)
-        val nbt = stack.orCreateTag
+        val nbt = stack.orCreateNbt
         nbt.putString("GunSettingId", id.toString())
         init(stack)
         return stack
     }
 
     fun getGunId(stack: ItemStack): Identifier {
-        return Identifier(stack.orCreateTag.getString("GunSettingId"))
+        return Identifier(stack.orCreateNbt.getString("GunSettingId"))
     }
 
     override fun createItemInstanceFG(stack: ItemStack): ItemInstance {
         //設定が無い場合
-        val stackNbt = stack.orCreateTag
+        val stackNbt = stack.orCreateNbt
         if (!stackNbt.contains("GunSettingId")) {
             return ItemInstance.EMPTY
         }
@@ -100,14 +96,14 @@ class GunItem(settings: Settings) : Item(settings), CustomItem, CustomTextureIte
     }
 
     fun getGunSetting(stack: ItemStack): GunSetting? {
-        val stackNbt = stack.orCreateTag
+        val stackNbt = stack.orCreateNbt
         if (!stackNbt.contains("GunSettingId")) return null
         val id = Identifier(stackNbt.getString("GunSettingId"))
         return GunManager.INSTANCE.getGunSetting(id)
     }
 
     fun init(stack: ItemStack) {
-        val stackNbt = stack.orCreateTag
+        val stackNbt = stack.orCreateNbt
 
         //銃の設定を取得
         val setting: GunSetting? = getGunSetting(stack)

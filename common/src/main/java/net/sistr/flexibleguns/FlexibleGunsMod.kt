@@ -1,6 +1,6 @@
 package net.sistr.flexibleguns
 
-import me.shedaniel.architectury.registry.entity.EntityAttributes
+import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import net.sistr.flexibleguns.entity.FGBotEntity
 import net.sistr.flexibleguns.setup.Registration
 import org.apache.logging.log4j.LogManager
@@ -11,7 +11,7 @@ object FlexibleGunsMod {
 
     fun init() {
         Registration.init()
-        EntityAttributes.register({ Registration.BOT_ENTITY.get() }, { FGBotEntity.createBotAttributes() })
+        EntityAttributeRegistry.register({ Registration.BOT_ENTITY.get() }, { FGBotEntity.createBotAttributes() })
     }
 
 }

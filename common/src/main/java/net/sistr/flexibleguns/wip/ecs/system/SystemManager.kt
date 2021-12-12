@@ -36,8 +36,9 @@ class SystemManager : ISystemManager {
 
     fun setPostDep(id: Identifier, postDep: Collection<Identifier>) {
         postDep.forEach {
-            val list = postDepMap.computeIfAbsent(it) { ImmutableList.of() }
-            postDepMap[it] = ImmutableList.builder<Identifier>().addAll(list).add(id).build()
+            //一旦めんどくさい
+            //val list = postDepMap.computeIfAbsent(it) { ImmutableList.of() }
+            //postDepMap[it] = ImmutableList.builder<Identifier>().addAll(list).add(id).build()
         }
     }
 

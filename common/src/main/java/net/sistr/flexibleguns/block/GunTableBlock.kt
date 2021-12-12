@@ -1,6 +1,6 @@
 package net.sistr.flexibleguns.block
 
-import me.shedaniel.architectury.registry.MenuRegistry
+import dev.architectury.registry.menu.MenuRegistry
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Material

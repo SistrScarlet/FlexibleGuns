@@ -1,24 +1,20 @@
 package net.sistr.flexibleguns.entrypoint;
 
-import me.shedaniel.architectury.platform.forge.EventBuses;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.ModelIdentifier;
+import dev.architectury.platform.forge.EventBuses;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloader;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiler.Profiler;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.sistr.flexibleguns.FlexibleGunsMod;
-import net.sistr.flexibleguns.resource.DataDrivenModelLoader;
+import net.sistr.flexibleguns.client.model.BulletModel;
 import net.sistr.flexibleguns.resource.JsonLoader;
 import net.sistr.flexibleguns.setup.ClientSetup;
 import net.sistr.flexibleguns.setup.ModSetup;
@@ -35,6 +31,7 @@ public class ForgeEntryPoint {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::modInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientInit);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::modelInit);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterLayers);
         MinecraftForge.EVENT_BUS.addListener(this::reloadListenerInit);
     }
 
@@ -46,13 +43,17 @@ public class ForgeEntryPoint {
         ClientSetup.INSTANCE.init();
     }
 
+    public void onRegisterLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(BulletModel.MODEL_LAYER, BulletModel::createBodyLayer);
+    }
+
     public void modelInit(ModelRegistryEvent event) {
-        DataDrivenModelLoader.Companion.getINSTANCE().load(MinecraftClient.getInstance().getResourceManager());
+        /*DataDrivenModelLoader.Companion.getINSTANCE().load(MinecraftClient.getInstance().getResourceManager());
         FlexibleGunsMod.INSTANCE.getLOGGER().info("now loding MixinModelLoader..");
         DataDrivenModelLoader.Companion.getINSTANCE().getIds().forEach(id -> {
             FlexibleGunsMod.INSTANCE.getLOGGER().info(id);
             ModelLoader.addSpecialModel(new ModelIdentifier(id, "inventory"));
-        });
+        });*/
     }
 
     public void reloadListenerInit(AddReloadListenerEvent event) {

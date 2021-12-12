@@ -65,7 +65,14 @@ class SoundDataHolder private constructor(private val length: Int, soundMap: Map
         }
 
         fun addSound(time: Int, sound: SoundData): Builder {
-            val sounds = soundMap.computeIfAbsent(time) { Lists.newArrayList() }
+            val sounds: MutableList<SoundData> =
+                if (soundMap.containsKey(time)) soundMap.get(time) else {
+                    val list: MutableList<SoundData> = Lists.newArrayList()
+                    soundMap[time] = list
+                    list
+                }
+            //動かなくて腹立つ
+            //soundMap.computeIfAbsent(time) { Lists.newArrayList() }
             sounds.add(sound)
             return this
         }

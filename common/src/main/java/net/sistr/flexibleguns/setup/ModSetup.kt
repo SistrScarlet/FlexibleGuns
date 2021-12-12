@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.setup
 
-import me.shedaniel.architectury.event.events.PlayerEvent
-import me.shedaniel.architectury.registry.CreativeTabs
+import dev.architectury.event.events.common.PlayerEvent
+import dev.architectury.registry.CreativeTabRegistry
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.sistr.flexibleguns.FlexibleGunsMod
@@ -10,12 +10,9 @@ import net.sistr.flexibleguns.client.overlay.CrossHairOverlay
 import net.sistr.flexibleguns.client.overlay.HudOverlayRenderer
 import net.sistr.flexibleguns.network.GunSyncPacket
 import net.sistr.flexibleguns.network.Networking
-import net.sistr.flexibleguns.wip.ecs.component.ComponentHolders
-import net.sistr.flexibleguns.wip.ecs.component.ComponentManager
-import net.sistr.flexibleguns.wip.ecs.system.Systems
 
 object ModSetup {
-    val ITEM_GROUP = CreativeTabs.create(Identifier(FlexibleGunsMod.MODID, "flexibleguns")) {
+    val ITEM_GROUP = CreativeTabRegistry.create(Identifier(FlexibleGunsMod.MODID, "flexibleguns")) {
         ItemStack(Registration.GUN_ITEM_BEFORE)
     }
 

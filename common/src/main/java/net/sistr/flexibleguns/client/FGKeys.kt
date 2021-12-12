@@ -1,6 +1,6 @@
 package net.sistr.flexibleguns.client
 
-import me.shedaniel.architectury.registry.KeyBindings
+import dev.architectury.registry.client.keymappings.KeyMappingRegistry
 import net.minecraft.client.option.KeyBinding
 import net.sistr.flexibleguns.FlexibleGunsMod
 import org.lwjgl.glfw.GLFW
@@ -31,7 +31,7 @@ object FGKeys {
     }
 
     fun register(keyBinding: KeyBinding) {
-        KeyBindings.registerKeyBinding(keyBinding)
+        KeyMappingRegistry.register(keyBinding)
     }
 
 }

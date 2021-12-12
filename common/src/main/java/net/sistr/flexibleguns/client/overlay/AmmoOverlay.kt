@@ -3,10 +3,12 @@ package net.sistr.flexibleguns.client.overlay
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.sistr.flexibleguns.FlexibleGunsMod
 import net.sistr.flexibleguns.client.renderer.util.NumberRenderer
+import net.sistr.flexibleguns.client.screen.GunTableScreen
 import net.sistr.flexibleguns.util.CustomItemStack
 import net.sistr.flexibleguns.util.HasAmmoItem
 
@@ -30,24 +32,27 @@ class AmmoOverlay : HudOverlayRenderer.Overlay {
         val baseX = (window.scaledWidth * 0.9f).toInt()
         val baseY = (window.scaledHeight * 0.7f).toInt()
 
-        mc.textureManager.bindTexture(GUI_TEXTURE)
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE)
         DrawableHelper.drawTexture(
             matrices,
             baseX - 4 - 16 * 3, baseY - 4, -97,
             0f, 0f,
             64, 32,
-            32, 64,
+            64, 32,
         )
 
-        mc.textureManager.bindTexture(NUMBER_TEXTURE)
+        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShaderTexture(0, NUMBER_TEXTURE)
         val ammo = itemInstance.getAmmoAmount()
         if (ammo == 0) {
-            RenderSystem.color4f(1.0f, 0.0f, 0.0f, 1.0f)
+            RenderSystem.setShaderColor(1.0f, 0.0f, 0.0f, 1.0f)
         }
 
         NumberRenderer.renderNumber(matrices, Math.min(ammo, 999), baseX, baseY, -95, 2, false)
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f)
+        RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
     }
 
     override fun tick(mc: MinecraftClient) {

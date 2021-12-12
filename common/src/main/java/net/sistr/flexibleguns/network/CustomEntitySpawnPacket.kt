@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.network
 
+import dev.architectury.networking.NetworkManager
 import io.netty.buffer.Unpooled
-import me.shedaniel.architectury.networking.NetworkManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.MinecraftClient
@@ -23,7 +23,7 @@ object CustomEntitySpawnPacket {
 
     fun <T> createPacket(entity: T): Packet<*> where T : Entity, T : FGCustomPacketEntity {
         val buf = PacketByteBuf(Unpooled.buffer())
-        buf.writeVarInt(entity.entityId)
+        buf.writeVarInt(entity.id)
         buf.writeUuid(entity.uuid)
         buf.writeVarInt(Registry.ENTITY_TYPE.getRawId(entity.type))
         buf.writeDouble(entity.x)
@@ -77,7 +77,7 @@ object CustomEntitySpawnPacket {
         if (entity is FGCustomPacketEntity) {
             entity.updateTrackedPosition(x, y, z)
             entity.headYaw = headYaw
-            entity.entityId = id
+            entity.id = id
             entity.uuid = uuid
             entity.updatePositionAndAngles(x, y, z, yaw, pitch)
             entity.setVelocity(velocityX, velocityY, velocityZ)

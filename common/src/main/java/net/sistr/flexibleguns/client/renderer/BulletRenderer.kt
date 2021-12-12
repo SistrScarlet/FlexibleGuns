@@ -4,8 +4,8 @@ import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.VertexConsumer
 import net.minecraft.client.render.VertexConsumerProvider
-import net.minecraft.client.render.entity.EntityRenderDispatcher
 import net.minecraft.client.render.entity.EntityRenderer
+import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
@@ -16,11 +16,12 @@ import net.sistr.flexibleguns.FlexibleGunsMod
 import net.sistr.flexibleguns.client.model.BulletModel
 import net.sistr.flexibleguns.entity.FGBulletEntity
 
-class BulletRenderer<T : FGBulletEntity>(dispatcher: EntityRenderDispatcher?) : EntityRenderer<T>(dispatcher) {
+class BulletRenderer<T : FGBulletEntity>(context: EntityRendererFactory.Context) : EntityRenderer<T>(context) {
+    val BULLET_MODEL = BulletModel(context.modelLoader.getModelPart(BulletModel.MODEL_LAYER))
+
     companion object {
         val BULLET_TEXTURE = Identifier(FlexibleGunsMod.MODID, "textures/entity/projectiles/bullet.png")
         val TRAIT_TEXTURE = Identifier(FlexibleGunsMod.MODID, "textures/entity/projectiles/trait.png")
-        val BULLET_MODEL = BulletModel()
     }
 
     override fun render(

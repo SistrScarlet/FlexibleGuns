@@ -74,7 +74,7 @@ class FGBotEntity(entityType: EntityType<out FGBotEntity>, world: World?) :
 
         //todo 視界と記憶によるターゲットAI
         targetSelector.add(
-            1, FollowTargetGoal(
+            1, ActiveTargetGoal(
                 this,
                 PlayerEntity::class.java, true
             )

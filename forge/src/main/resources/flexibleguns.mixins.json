@@ -4,7 +4,7 @@
     "package": "net.sistr.flexibleguns.mixin",
     "compatibilityLevel": "JAVA_8",
     "mixins": [  ],
-    "client": [ "MixinForgeIngameGui" ],
+    "client": [ "MixinForgeIngameGui", "MixinModelLoader" ],
     "injectors": {
         "defaultRequire": 1
     }

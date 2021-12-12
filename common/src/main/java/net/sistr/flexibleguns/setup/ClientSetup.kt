@@ -1,7 +1,7 @@
 package net.sistr.flexibleguns.setup
 
-import me.shedaniel.architectury.registry.MenuRegistry
-import me.shedaniel.architectury.registry.entity.EntityRenderers
+import dev.architectury.registry.level.entity.EntityRendererRegistry
+import dev.architectury.registry.menu.MenuRegistry
 import net.minecraft.util.Identifier
 import net.sistr.flexibleguns.FlexibleGunsMod
 import net.sistr.flexibleguns.client.FGKeys
@@ -18,8 +18,8 @@ object ClientSetup {
     val GUN_HIT_SOUND_CAP_ID = Identifier(FlexibleGunsMod.MODID, "gun_hit")
 
     fun init() {
-        EntityRenderers.register(Registration.BULLET_ENTITY_BEFORE) { BulletRenderer(it) }
-        EntityRenderers.register(Registration.BOT_ENTITY_BEFORE) { BotRenderer(it) }
+        EntityRendererRegistry.register({ Registration.BULLET_ENTITY_BEFORE }) { BulletRenderer(it) }
+        EntityRendererRegistry.register({ Registration.BOT_ENTITY_BEFORE }) { BotRenderer(it) }
         FGKeys.init()
         SoundCapManager.INSTANCE.register(GUN_SHOOT_SOUND_CAP_ID, 2)
         SoundCapManager.INSTANCE.register(GUN_HIT_SOUND_CAP_ID, 2)
@@ -29,7 +29,7 @@ object ClientSetup {
         ModelPredicateProviderRegistrySpecificAccessor.callRegister(
             Registration.GUN_ITEM_BEFORE,
             Identifier(FlexibleGunsMod.MODID, "ammo")
-        ) { stack, _, entity ->
+        ) { stack, _, entity, _ ->
             return@callRegister if (entity != null) {
                 val itemIns = ((stack as Any) as CustomItemStack).getItemInstanceFG()
                 (itemIns as GunInstance).getAmmoAmount().toFloat()
