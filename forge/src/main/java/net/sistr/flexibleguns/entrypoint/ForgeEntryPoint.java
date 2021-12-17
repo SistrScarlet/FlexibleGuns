@@ -11,6 +11,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,9 +45,11 @@ public class ForgeEntryPoint {
         ForgeKt.getMOD_BUS().addListener(this::clientInit);
         ForgeKt.getMOD_BUS().addListener(this::registerEntityRenderer);
         ForgeKt.getMOD_BUS().addListener(this::modelInit);
+        ForgeKt.getMOD_BUS().addListener(this::registerClientReloadListener);
         ForgeKt.getMOD_BUS().addListener(this::onRegisterLayers);
         MinecraftForge.EVENT_BUS.addListener(this::reloadListenerInit);
         MinecraftForge.EVENT_BUS.addListener(this::onHudRender);
+
     }
 
     public void modInit(FMLCommonSetupEvent event) {
@@ -83,6 +86,40 @@ public class ForgeEntryPoint {
             FlexibleGunsMod.INSTANCE.getLOGGER().info(id);
             ForgeModelBakery.addSpecialModel(new ModelIdentifier(id, "inventory"));
         });
+    }
+
+    public void registerClientReloadListener(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(
+                new ResourceReloader() {
+                    @Override
+                    public CompletableFuture<Void> reload(ResourceReloader.Synchronizer synchronizer,
+                                                          ResourceManager manager, Profiler prepareProfiler,
+                                                          Profiler applyProfiler, Executor prepareExecutor,
+                                                          Executor applyExecutor) {
+                        return synchronizer.whenPrepared(Unit.INSTANCE).thenRunAsync(() -> {
+                            applyProfiler.startTick();
+                            applyProfiler.push("listener");
+                            this.apply(manager);
+                            applyProfiler.pop();
+                            applyProfiler.endTick();
+                        }, applyExecutor);
+                    }
+
+                    private void apply(ResourceManager manager) {
+                        DataDrivenModelLoader.Companion.getINSTANCE().load(manager);
+                        FlexibleGunsMod.INSTANCE.getLOGGER().info("now loding FGs ModelLoader..");
+                        DataDrivenModelLoader.Companion.getINSTANCE().getIds().forEach(id -> {
+                            FlexibleGunsMod.INSTANCE.getLOGGER().info(id);
+                            ForgeModelBakery.addSpecialModel(new ModelIdentifier(id, "inventory"));
+                        });
+                    }
+
+                    @Override
+                    public String getName() {
+                        return "FlexibleGuns-ML";
+                    }
+                }
+        );
     }
 
     public void reloadListenerInit(AddReloadListenerEvent event) {
