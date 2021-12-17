@@ -6,6 +6,9 @@ import net.minecraft.util.Identifier
 import net.sistr.flexibleguns.FlexibleGunsMod
 import net.sistr.flexibleguns.client.FGKeys
 import net.sistr.flexibleguns.client.SoundCapManager
+import net.sistr.flexibleguns.client.overlay.AmmoOverlay
+import net.sistr.flexibleguns.client.overlay.CrossHairOverlay
+import net.sistr.flexibleguns.client.overlay.HudOverlayRenderer
 import net.sistr.flexibleguns.client.renderer.BotRenderer
 import net.sistr.flexibleguns.client.renderer.BulletRenderer
 import net.sistr.flexibleguns.client.screen.GunTableScreen
@@ -26,6 +29,9 @@ object ClientSetup {
         MenuRegistry.registerScreenFactory(Registration.GUN_TABLE_SCREEN_HANDLER_BEFORE) { screenHandler, inventory, title ->
             GunTableScreen(screenHandler, inventory, title)
         }
+        HudOverlayRenderer.INSTANCE.register(AmmoOverlay())
+        HudOverlayRenderer.INSTANCE.register(CrossHairOverlay())
+
         ModelPredicateProviderRegistrySpecificAccessor.callRegister(
             Registration.GUN_ITEM_BEFORE,
             Identifier(FlexibleGunsMod.MODID, "ammo")
