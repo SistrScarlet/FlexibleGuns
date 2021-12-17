@@ -48,8 +48,6 @@ public class ForgeEntryPoint {
         ForgeKt.getMOD_BUS().addListener(this::registerClientReloadListener);
         ForgeKt.getMOD_BUS().addListener(this::onRegisterLayers);
         MinecraftForge.EVENT_BUS.addListener(this::reloadListenerInit);
-        MinecraftForge.EVENT_BUS.addListener(this::onHudRender);
-
     }
 
     public void modInit(FMLCommonSetupEvent event) {
@@ -69,6 +67,7 @@ public class ForgeEntryPoint {
                     }
                 }
         );
+        MinecraftForge.EVENT_BUS.addListener(this::onHudRender);
     }
 
     public void registerEntityRenderer(EntityRenderersEvent.RegisterRenderers event) {
