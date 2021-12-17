@@ -5,7 +5,7 @@ plugins {
 loom {
     forge {
         mixinConfig "flexibleguns-common.mixins.json"
-        mixinConfig "flexibleguns.mixins.json"
+        //mixinConfig "flexibleguns.mixins.json"
     }
 }
 
@@ -34,7 +34,9 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
-    implementation 'thedarkcolour:kotlinforforge:1.15.1'
+    implementation 'thedarkcolour:kotlinforforge:3.0.0'
+    forgeRuntimeLibrary 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0'
+    forgeRuntimeLibrary 'org.jetbrains.kotlin:kotlin-reflect:1.6.0'
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

@@ -31,7 +31,7 @@ public class MixinInGameHud {
         HudOverlayRenderer.Companion.getINSTANCE().render(this.client, matrices, tickDelta);
     }
 
-    @Inject(method = "tick", at = @At("HEAD"))
+    @Inject(method = "tick()V", at = @At("HEAD"))
     public void onTick(CallbackInfo ci) {
         HudOverlayRenderer.Companion.getINSTANCE().tick(this.client);
     }
