@@ -90,7 +90,7 @@ public abstract class MixinLivingEntity extends Entity implements ItemInstanceHo
         ItemStack stack = this.getMainHandStack();
         ItemInstance itemIns = ((CustomItemStack) (Object) stack).getItemInstanceFG();
         if (itemIns != null) {
-            if (itemIns instanceof ZoomableItem) {
+            if (itemIns instanceof ZoomableItem && ((ZoomableItem) itemIns).canZoom()) {
                 boolean zoomInput = ((Inputable) this).getInputKeyFG(Input.ZOOM);
                 if (!prevZoomInputFG && zoomInput) {
                     boolean zoom = !isZoom_FG();
