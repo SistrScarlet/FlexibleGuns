@@ -345,8 +345,10 @@ class GunInstance(
             //ちょっと中心に寄せる
             bullet.setProperties(
                 holder,
-                holder.pitch + inAccuracy * ((1 - MathHelper.sin(holder.random.nextFloat() * halfPi)) * 2 - 1),
-                holder.yaw + inAccuracy * ((1 - MathHelper.sin(holder.random.nextFloat() * halfPi)) * 2 - 1),
+                holder.pitch + inAccuracy * (holder.random.nextFloat()
+                    .let { it * it } * (if (holder.random.nextBoolean()) 1 else -1)),
+                holder.yaw + inAccuracy * (holder.random.nextFloat()
+                    .let { it * it } * (if (holder.random.nextBoolean()) 1 else -1)),
                 0.0f,
                 velocity,
                 0f
